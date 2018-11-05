@@ -30,6 +30,7 @@ func check(err error) {
 func xlsx2csv() {
 	var err error
 	xlsxFile, err := xlsx.OpenFile(flag.Arg(0))
+	dir := flag.Arg(1)
 	check(err)
 
 	wg := sync.WaitGroup{}
@@ -37,14 +38,14 @@ func xlsx2csv() {
 		wg.Add(1)
 		go func(sheet *xlsx.Sheet) {
 			defer wg.Done()
-			createCsv(sheet)
+			createCsv(sheet, dir)
 		}(sheet)
 	}
 	wg.Wait()
 }
 
-func createCsv(sheet *xlsx.Sheet) {
-	file, err := os.Create(sheet.Name + ".csv")
+func createCsv(sheet *xlsx.Sheet, dir string) {
+	file, err := os.Create(dir + "/" + sheet.Name + ".csv")
 	check(err)
 	w := csv.NewWriter(file)
 	defer w.Flush()
