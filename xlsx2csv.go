@@ -47,8 +47,11 @@ func xlsx2csv() {
 func createCsv(sheet *xlsx.Sheet, dir string) {
 	file, err := os.Create(dir + "/" + sheet.Name + ".csv")
 	check(err)
+	defer file.Close()
+
 	w := csv.NewWriter(file)
 	defer w.Flush()
+
 	for _, row := range sheet.Rows {
 		out := make([]string, 0)
 		for _, cell := range row.Cells {
