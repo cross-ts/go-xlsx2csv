@@ -4,9 +4,9 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"github.com/tealeg/xlsx"
 	"os"
 	"sync"
-	"github.com/tealeg/xlsx"
 )
 
 func init() {
@@ -34,12 +34,11 @@ func xlsx2csv() {
 
 	wg := sync.WaitGroup{}
 	for _, sheet := range xlsxFile.Sheets {
-		fmt.Println(sheet.Name)
 		wg.Add(1)
-		go func() {
+		go func(sheet *xlsx.Sheet) {
 			defer wg.Done()
 			createCsv(sheet)
-		}()
+		}(sheet)
 	}
 	wg.Wait()
 }
